@@ -2,11 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 import { User } from '../entities/user' ;
+import { secretOrKey } from "../config/config";
 
 const tokenChecking = async (req:Request, res:Response, next:NextFunction) => {
     const { token } = req.body ;
 
-    const decode = jwt.verify(token, "secretkeyappearshere") ;
+    const decode = jwt.verify(token, secretOrKey ) ;
 
     if( !decode ) return res.json({ msg: "Dangerous access!" }) ;
     
