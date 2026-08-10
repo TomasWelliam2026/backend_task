@@ -1,22 +1,31 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
+import { EntitySchema } from "typeorm"
 
-@Entity()
-export class User extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number
-
-    @Column()
-    username: string
-
-    @Column()
-    password: string
-
-    @Column()
+export interface User {
+    id: number,
+    username: string,
+    password: string,
     email: string
-
-    @Column()
-    createdAt: string
-
-    @Column()
-    updatedAt: string
 }
+
+export const UserEntity = new EntitySchema<User>({
+    name: "users",
+    columns: {
+        id: {
+            type: Number,
+            primary: true,
+            generated: true,
+        },
+        username: {
+            type: String,
+            length : 30
+        },
+        password: {
+            type: String,
+            length: 30
+        },
+        email: {
+            type: String,
+            length: 50
+        },
+    },
+})
