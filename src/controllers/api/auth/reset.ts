@@ -19,7 +19,7 @@ export const PasswordReset = async (req:any, res:any) => {
 
     // user.password = await bcrypt.hash(newPassword, 10) ;
 
-    // await userRepository.save(newUser) ;
+    // await userRepository.save(user) ;
 
     res.json({ msg: "success" }) ;
 }
