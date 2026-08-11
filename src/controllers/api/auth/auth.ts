@@ -1,19 +1,23 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs' ;
 import jwt from 'jsonwebtoken' ;
+import { AppDataSource } from "../../../database/datasource";
 
-import { User } from '../../../entities/user' ;
+import { User, UserEntity } from '../../../entities/user' ;
+import { secretOrKey } from '../../../config/config';
 
-export const SignUp = async (req:Request, res:Response) => {
-    const { username, password, email } = req.body ;
+export const SignUp = async (req:any, res:any) => {
+    const { name, password, email } = req.body ;
 
-    const user = new User() ;
+    console.log(req.body) ;
+    // const userRepository = AppDataSource.getRepository<User>(UserEntity) ;
+    // const newUser = {
+    //     username: username,
+    //     password: await bcrypt.hash(password, 10),
+    //     email: email
+    // }
 
-    user.username = username ;
-    user.password = await bcrypt.hash(password, 10) ;
-    user.email = email;
-
-    await user.save() ;
+    // await userRepository.save(newUser) ;
 
     res.json({ msg: "success" }) ;
 }
@@ -21,15 +25,17 @@ export const SignUp = async (req:Request, res:Response) => {
 export const SignIn = async (req:Request, res:Response) => {
     const { email, password } = req.body ;
 
-    const user:any = await User.findOne({ email: email }) ;
+    // const userRepository = AppDataSource.getRepository<User>(UserEntity) ;
 
-    if( !bcrypt.compare(password, user.password) ) return res.json({ msg: "failure" }) ;
+    // const user:any = await userRepository.findOneBy({ email: email }) ;
 
-    const token = await jwt.sign({
-        email: email,
-        username: user.username,
-    }, "secretkeyappearshere", { expiresIn: "1h" }) ;
+    // if( !bcrypt.compare(password, user.password) ) return res.json({ msg: "failure" }) ;
 
-    res.json({ msg: "success", token: token }) ;
+    // const token = await jwt.sign({
+    //     email: email,
+    //     username: user.username,
+    // }, secretOrKey, { expiresIn: "1h" }) ;
+
+    // res.json({ msg: "success", token: token }) ;
 }
 

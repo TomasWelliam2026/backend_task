@@ -1,22 +1,26 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-import { User } from '../entities/user' ;
+import { AppDataSource } from '../database/datasource' ;
+import { User, UserEntity } from '../entities/user' ;
+import { secretOrKey } from "../config/config";
 
-const tokenChecking = async (req:Request, res:Response, next:NextFunction) => {
+export const tokenChecking = async (req:Request, res:Response, next:NextFunction) => {
     const { token } = req.body ;
 
-    const decode = jwt.verify(token, "secretkeyappearshere") ;
+    const decode = jwt.verify(token, secretOrKey ) ;
 
     if( !decode ) return res.json({ msg: "Dangerous access!" }) ;
     
     next() ;
 }
 
-const userExist = async (req:Request, res:Response, next:NextFunction) => {
+export const userExist = async (req:Request, res:Response, next:NextFunction) => {
     const { email } = req.body ;
 
-    const user = await User.findOne({ email: email }) ;
+    const userRepository = AppDataSource.getRepository<User>(UserEntity) ;
+
+    const user = await userRepository.findOneBy({ email: email }) ;
 
     if( !user ) return res.json({ msg: "User not found!" }) ;
 
