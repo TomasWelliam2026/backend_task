@@ -29,7 +29,7 @@ export const SignIn = async (req:any, res:Response) => {
 
     const user:any = await userRepository.findOneBy({ email: email }) ;
 
-    if( !bcrypt.compare(password, user.password) ) return res.json({ msg: "failure" }) ;
+    if( !bcrypt.compare(password, user.password) ) return res.json({ msg: Constants.Failure }) ;
 
     const token = await jwt.sign({
         email: email,
