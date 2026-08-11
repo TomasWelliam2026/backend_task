@@ -1,12 +1,13 @@
 import express from 'express';
-import { SignIn, SignUp } from '../../../controllers';
+import { SignIn, SignUp, PasswordReset } from '../../../controllers';
+import { tokenChecking, isUserExist, NotUserExist } from '../../../middleware/auth';
 
 const router = express() ;
 
-router.post('/signin', SignIn );
+router.post('/signin', isUserExist, SignIn );
 
-router.post('/signup', SignUp );
+router.post('/signup', NotUserExist, SignUp );
 
-// router.post('/reset', )
+router.post('/reset', tokenChecking, PasswordReset) ;
 
 export default router;

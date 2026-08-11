@@ -1,25 +1,22 @@
-import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs' ;
-import jwt from 'jsonwebtoken' ;
 import { AppDataSource } from "../../../database/datasource";
 
 import { User, UserEntity } from '../../../entities/user' ;
-import { secretOrKey } from '../../../config/config';
 
+import * as Constants from '../../../config/messages' ;
 
 export const PasswordReset = async (req:any, res:any) => {
-    const { origin, newPassword } = req.body ;
+    const { email, origin, newPassword } = req.body ;
 
-    console.log(req.body) ;
     const userRepository = AppDataSource.getRepository<User>(UserEntity) ;
 
-    // const user:any = await userRepository.findOneBy({ email: email }) ;
+    const user:any = await userRepository.findOneBy({ email: email }) ;
 
-    // if( !bcrypt.compare(origin, user.password) ) return res.json({ msg: "failure" }) ;
+   if( !(await bcrypt.compare(origin, user.password)) ) return res.json({ msg: Constants.Failure }) ;
 
-    // user.password = await bcrypt.hash(newPassword, 10) ;
+    user.password = await bcrypt.hash(newPassword, 10) ;
 
-    // await userRepository.save(user) ;
+    const result = await userRepository.save(user) ;
 
-    res.json({ msg: "success" }) ;
+    res.json({ msg: Constants.Success }) ;
 }

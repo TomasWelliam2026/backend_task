@@ -1,3 +1,3 @@
-import { SignIn, SignUp } from "./api";
+import { SignIn, SignUp, PasswordReset } from "./api";
 
-export { SignIn, SignUp } ;
+export { SignIn, SignUp, PasswordReset } ;

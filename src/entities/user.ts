@@ -1,4 +1,4 @@
-import { EntitySchema } from "typeorm"
+import { BaseEntity, EntitySchema } from "typeorm"
 
 export interface User {
     id: number,
@@ -17,15 +17,15 @@ export const UserEntity = new EntitySchema<User>({
         },
         username: {
             type: String,
-            length : 30
+            length : 130
         },
         password: {
             type: String,
-            length: 30
+            length: 130
         },
         email: {
             type: String,
-            length: 50
+            length: 150
         },
     },
-})
+});

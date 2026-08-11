@@ -5,37 +5,37 @@ import { AppDataSource } from "../../../database/datasource";
 
 import { User, UserEntity } from '../../../entities/user' ;
 import { secretOrKey } from '../../../config/config';
+import * as Constants from '../../../config/messages' ;
 
 export const SignUp = async (req:any, res:any) => {
     const { name, password, email } = req.body ;
 
-    console.log(req.body) ;
-    // const userRepository = AppDataSource.getRepository<User>(UserEntity) ;
-    // const newUser = {
-    //     username: username,
-    //     password: await bcrypt.hash(password, 10),
-    //     email: email
-    // }
+    const userRepository = AppDataSource.getRepository<User>(UserEntity) ;
+    const newUser = {
+        username: name,
+        password: await bcrypt.hash(password, 10),
+        email: email
+    }
 
-    // await userRepository.save(newUser) ;
+    const result = await userRepository.save(newUser) ;
 
-    res.json({ msg: "success" }) ;
+    res.json({ msg: Constants.Success }) ;
 }
 
-export const SignIn = async (req:Request, res:Response) => {
+export const SignIn = async (req:any, res:Response) => {
     const { email, password } = req.body ;
 
-    // const userRepository = AppDataSource.getRepository<User>(UserEntity) ;
+    const userRepository = AppDataSource.getRepository<User>(UserEntity) ;
 
-    // const user:any = await userRepository.findOneBy({ email: email }) ;
+    const user:any = await userRepository.findOneBy({ email: email }) ;
 
-    // if( !bcrypt.compare(password, user.password) ) return res.json({ msg: "failure" }) ;
+    if( !bcrypt.compare(password, user.password) ) return res.json({ msg: "failure" }) ;
 
-    // const token = await jwt.sign({
-    //     email: email,
-    //     username: user.username,
-    // }, secretOrKey, { expiresIn: "1h" }) ;
+    const token = await jwt.sign({
+        email: email,
+        username: user.username,
+    }, secretOrKey, { expiresIn: "1h" }) ;
 
-    // res.json({ msg: "success", token: token }) ;
+    res.json({ msg: Constants.SignInOk, token: token }) ;
 }
 

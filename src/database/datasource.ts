@@ -5,19 +5,23 @@ import { DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER } from "../config/confi
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  // host: DB_HOST,
-  // port: Number(DB_PORT),
-  // username: DB_USER,
-  // password: DB_PASSWORD,
-  // database: DB_NAME,
-  host: "http://localhost",
-  port: 5432,
-  username: "root",
-  password: "",
-  database: "postgres",
+  host: DB_HOST,
+  port: Number(DB_PORT),
+  username: DB_USER,
+  password: DB_PASSWORD,
+  database: DB_NAME,
   synchronize: true,
-  logging: true,
   entities: [UserEntity],
   subscribers: [],
   migrations: [],
-})
+}) ;
+
+export const DBconnection = async () => {
+  try {
+    await AppDataSource.initialize() ;
+    console.log("PostgreSQL connection successful!");
+  } catch(error) {
+    console.log(error) ;
+  }
+
+}
