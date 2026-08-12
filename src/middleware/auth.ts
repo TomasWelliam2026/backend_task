@@ -1,20 +1,19 @@
 import { Response, NextFunction } from "express";
+import { secretOrKey } from "../config/config";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 
 import { AppDataSource } from '../database/datasource' ;
 import { User, UserEntity } from '../entities/user' ;
-import { secretOrKey } from "../config/config";
 import * as Constants from '../config/messages' ;
 
 export const tokenChecking = async (req:any, res:Response, next:NextFunction) => {
     const { token } = req.headers ;
 
-    if( !token ) return res.json({ msg: Constants.TokenFalse }) ;
+    if( !token ) return res.json({ msg: Constants.TokenFalse, code:401 }) ;
     
     const decode:any = jwt.verify(token, secretOrKey ) ;
 
-    if( !decode ) return res.json({ msg: Constants.TokenFalse }) ;
+    if( !decode ) return res.json({ msg: Constants.TokenFalse, code: 401 }) ;
     
     req.body.email = decode.email ;
     
@@ -22,14 +21,13 @@ export const tokenChecking = async (req:any, res:Response, next:NextFunction) =>
 }
 
 export const isUserExist = async (req:any, res:Response, next:NextFunction) => {
-    const { email, password } = req.body ;
+    const { email } = req.body ;
 
     const userRepository = AppDataSource.getRepository<User>(UserEntity) ;
 
     const user = await userRepository.findOneBy({ email: email }) ;
 
     if( !user ) return res.json({ msg: Constants.UserNotFound }) ;
-    if( !(await bcrypt.compare(password, user.password)) ) return res.json({ msg: Constants.PasswordFalse }) ;
 
     next() ;
 }
@@ -37,12 +35,24 @@ export const isUserExist = async (req:any, res:Response, next:NextFunction) => {
 export const NotUserExist = async (req:any, res:Response, next:NextFunction) => {
     const { email } = req.body ;
 
+    console.log(req) ;
+
     const userRepository = AppDataSource.getRepository<User>(UserEntity) ;
 
     const user = await userRepository.findOneBy({ email: email }) ;
 
     if( user ) return res.json({ msg: Constants.UserExist }) ;
     
+    next() ;
+}
+
+export const confirmPassword = async (req:any, res:Response, next:NextFunction) => {
+    const { newPassword, confirmPassword } = req.body ;
+
+    console.log(req.body) ;
+
+    if( newPassword !== confirmPassword ) return res.json({ msg: Constants.PasswordConfirm }) ;
+        
     next() ;
 }
 
