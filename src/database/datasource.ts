@@ -23,5 +23,4 @@ export const DBconnection = async () => {
   } catch(error) {
     console.log(error) ;
   }
-
 }

@@ -16,7 +16,7 @@ app.use(cors()) ;
 
 app.use('', api) ;
 
-const PORT = 3000 ;
+const PORT = process.env.PORT ;
 
 DBconnection() ;
 
