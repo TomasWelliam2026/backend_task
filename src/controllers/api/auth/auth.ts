@@ -19,7 +19,7 @@ export const SignUp = async (req:any, res:any) => {
 
     const result = await userRepository.save(newUser) ;
 
-    res.json({ msg: Constants.Success }) ;
+    res.json({ msg: Constants.Success, code: 200 }) ;
 }
 
 export const SignIn = async (req:any, res:Response) => {
@@ -29,13 +29,13 @@ export const SignIn = async (req:any, res:Response) => {
 
     const user:any = await userRepository.findOneBy({ email: email }) ;
 
-    if( !(await bcrypt.compare(password, user.password)) ) return res.json({ msg: Constants.PasswordFalse }) ;
+    if( !(await bcrypt.compare(password, user.password)) ) return res.json({ msg: Constants.PasswordFalse, code: 401 }) ;
 
     const token = await jwt.sign({
         email: email,
         username: user.username,
     }, secretOrKey, { expiresIn: "1h" }) ;
 
-    res.json({ msg: Constants.SignInOk, token: token }) ;
+    res.json({ msg: Constants.SignInOk, token: token, code: 200 }) ;
 }
 

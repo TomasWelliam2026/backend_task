@@ -7,11 +7,13 @@ import { User, UserEntity } from '../entities/user' ;
 import * as Constants from '../config/messages' ;
 
 export const tokenChecking = async (req:any, res:Response, next:NextFunction) => {
-    const { token } = req.headers ;
+    const { authorization } = req.headers ;
 
-    if( !token ) return res.json({ msg: Constants.TokenFalse, code:401 }) ;
+    console.log("header ->", req.headers) ;
     
-    const decode:any = jwt.verify(token, secretOrKey ) ;
+    if( !authorization ) return res.json({ msg: Constants.TokenFalse, code:401 }) ;
+    
+    const decode:any = jwt.verify(authorization, secretOrKey ) ;
 
     if( !decode ) return res.json({ msg: Constants.TokenFalse, code: 401 }) ;
     
@@ -27,7 +29,7 @@ export const isUserExist = async (req:any, res:Response, next:NextFunction) => {
 
     const user = await userRepository.findOneBy({ email: email }) ;
 
-    if( !user ) return res.json({ msg: Constants.UserNotFound }) ;
+    if( !user ) return res.json({ msg: Constants.UserNotFound, code: 401 }) ;
 
     next() ;
 }
@@ -41,7 +43,7 @@ export const NotUserExist = async (req:any, res:Response, next:NextFunction) => 
 
     const user = await userRepository.findOneBy({ email: email }) ;
 
-    if( user ) return res.json({ msg: Constants.UserExist }) ;
+    if( user ) return res.json({ msg: Constants.UserExist, code: 401 }) ;
     
     next() ;
 }
@@ -51,7 +53,7 @@ export const confirmPassword = async (req:any, res:Response, next:NextFunction) 
 
     console.log(req.body) ;
 
-    if( newPassword !== confirmPassword ) return res.json({ msg: Constants.PasswordConfirm }) ;
+    if( newPassword !== confirmPassword ) return res.json({ msg: Constants.PasswordConfirm, code: 401 }) ;
         
     next() ;
 }

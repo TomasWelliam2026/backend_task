@@ -12,11 +12,11 @@ export const PasswordReset = async (req:any, res:any) => {
 
     const user:any = await userRepository.findOneBy({ email: email }) ;
 
-   if( !(await bcrypt.compare(origin, user.password)) ) return res.json({ msg: Constants.Failure }) ;
+   if( !(await bcrypt.compare(origin, user.password)) ) return res.json({ msg: Constants.Failure, code: 401 }) ;
 
     user.password = await bcrypt.hash(newPassword, 10) ;
 
     const result = await userRepository.save(user) ;
 
-    res.json({ msg: Constants.Success }) ;
+    res.json({ msg: Constants.Success, code: 200 }) ;
 }
